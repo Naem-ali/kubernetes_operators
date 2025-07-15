@@ -108,6 +108,39 @@ graph TD
     C -->|Monitor| F[Health Checks]
 ```
 
+## 🛠️ Implementation Notes
+
+### Technology Stack
+- 🔄 Built using [Kopf](https://github.com/nolar/kopf) framework for Kubernetes operator development in Python
+- 📊 Prometheus integration for metrics collection and monitoring
+- 🐘 PostgreSQL native metrics collection (planned)
+
+### Scaling Logic
+The operator implements intelligent scaling based on multiple factors:
+
+- 📈 **Performance Metrics**
+  - Queries per second (QPS) per replica
+  - Average query latency
+  - CPU and memory utilization
+
+- ⏲️ **Scaling Controls**
+  - Configurable cooldown periods between scaling operations
+  - Gradual scaling to prevent resource spikes
+  - Maximum and minimum replica constraints
+
+### Monitoring Integration
+- 📡 Prometheus metrics push gateway integration
+- 🔍 Real-time performance monitoring
+- 📊 Custom metrics collection pipeline
+
+### Security & Permissions
+- 🔒 RBAC permissions configured for minimal required access
+- 🛡️ Namespace-scoped resource management
+- 🔐 Secure communication channels between components
+
+### Current Limitations
+> ⚠️ Note: Metrics collection currently uses simulated data. Integration with actual PostgreSQL metrics collection is in progress.
+
 ## ⚠️ Missing Components
 
 1. **Backup Management**
