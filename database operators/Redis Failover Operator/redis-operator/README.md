@@ -165,17 +165,6 @@ Common issues and solutions:
 - 🔌 Connection issues
 - 💽 Persistence problems
 
-## 📚 Documentation
-
-- [Detailed Setup Guide](docs/setup.md)
-- [Configuration Reference](docs/configuration.md)
-- [Backup & Recovery](docs/backup.md)
-- [Monitoring Guide](docs/monitoring.md)
-
-## 🤝 Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
-
 
 ## 💬 Support
 
