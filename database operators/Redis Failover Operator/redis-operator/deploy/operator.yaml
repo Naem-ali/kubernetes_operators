@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-operator
+  template:
+    metadata:
+      labels:
+        app: redis-operator
+    spec:
+      serviceAccountName: redis-operator
+      containers:
+        - name: operator
+          image: redis-operator:latest
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: redis-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: redis-operator
+rules:
+  - apiGroups: ["redis.operator.io"]
+    resources: ["redisfailovers"]
+    verbs: ["*"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets", "deployments"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints", "configmaps", "secrets", "persistentvolumeclaims"]
+    verbs: ["*"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: redis-operator
+subjects:
+  - kind: ServiceAccount
+    name: redis-operator
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: redis-operator
+  apiGroup: rbac.authorization.k8s.io
