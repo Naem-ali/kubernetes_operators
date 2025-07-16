@@ -7,11 +7,70 @@
   <br><br>
 </div>
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-red.svg)](LICENSE)
 [![Go](https://img.shields.io/badge/go-v1.19+-blue.svg)](https://golang.org/)
 [![Kubernetes](https://img.shields.io/badge/kubernetes-%3E%3D%201.19-brightgreen.svg)](https://kubernetes.io/)
 [![Redis](https://img.shields.io/badge/redis-6.2+-red.svg)](https://redis.io/)
 
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    A[Operator Controller] -->|Manages| B[Redis Master]
+    B -->|Replicates to| C[Redis Replica 1]
+    B -->|Replicates to| D[Redis Replica 2]
+    A -->|Monitors| E[Health Checks]
+    A -->|Configures| F[Backups]
+```
+
+### Detailed Architecture
+```mermaid
+graph TD
+    subgraph Kubernetes Cluster
+        API[Kubernetes API Server] -->|Watch Events| Controller[Redis Operator Controller]
+        
+        subgraph Operator Components
+            Controller -->|Manages| CRD[Redis CRD]
+            Controller -->|Configures| Config[Redis Configuration]
+            Controller -->|Monitors| Sentinel[Redis Sentinel]
+            Controller -->|Controls| Services[Service Objects]
+            Controller -->|Collects| Metrics[Metrics Exporter]
+            Controller -->|Manages| Backup[Backup Manager]
+        end
+        
+        subgraph Redis Cluster
+            Master[Redis Master] -->|Writes| PVC1[Master PVC]
+            Replica1[Redis Replica 1] -->|Reads| PVC2[Replica PVC 1]
+            Replica2[Redis Replica 2] -->|Reads| PVC3[Replica PVC 2]
+            Master -->|Replicates to| Replica1
+            Master -->|Replicates to| Replica2
+        end
+        
+        subgraph Sentinel Layer
+            Sentinel -->|Monitors| Master
+            Sentinel -->|Monitors| Replica1
+            Sentinel -->|Monitors| Replica2
+            Sentinel -->|Triggers| Failover[Failover Process]
+        end
+        
+        subgraph Monitoring
+            Metrics -->|Exports| Prometheus[Prometheus]
+            Prometheus -->|Displays| Grafana[Grafana]
+        end
+        
+        subgraph Backup Infrastructure
+            Backup -->|Schedules| BackupJob[Backup Jobs]
+            BackupJob -->|Stores| Storage[S3/PVC Storage]
+        end
+    end
+
+    style Kubernetes Cluster fill:#f5f5f5,stroke:#333,stroke-width:2px
+    style Operator Components fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style Redis Cluster fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Sentinel Layer fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style Monitoring fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style Backup Infrastructure fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+```
 
 # Redis Failover Operator Project Structure
 
@@ -113,66 +172,6 @@ spec:
   persistence:
     enabled: true
     size: 10Gi
-```
-
-## 🏗️ Architecture
-
-```mermaid
-graph TD
-    A[Operator Controller] -->|Manages| B[Redis Master]
-    B -->|Replicates to| C[Redis Replica 1]
-    B -->|Replicates to| D[Redis Replica 2]
-    A -->|Monitors| E[Health Checks]
-    A -->|Configures| F[Backups]
-```
-
-### Detailed Architecture
-```mermaid
-graph TD
-    subgraph Kubernetes Cluster
-        API[Kubernetes API Server] -->|Watch Events| Controller[Redis Operator Controller]
-        
-        subgraph Operator Components
-            Controller -->|Manages| CRD[Redis CRD]
-            Controller -->|Configures| Config[Redis Configuration]
-            Controller -->|Monitors| Sentinel[Redis Sentinel]
-            Controller -->|Controls| Services[Service Objects]
-            Controller -->|Collects| Metrics[Metrics Exporter]
-            Controller -->|Manages| Backup[Backup Manager]
-        end
-        
-        subgraph Redis Cluster
-            Master[Redis Master] -->|Writes| PVC1[Master PVC]
-            Replica1[Redis Replica 1] -->|Reads| PVC2[Replica PVC 1]
-            Replica2[Redis Replica 2] -->|Reads| PVC3[Replica PVC 2]
-            Master -->|Replicates to| Replica1
-            Master -->|Replicates to| Replica2
-        end
-        
-        subgraph Sentinel Layer
-            Sentinel -->|Monitors| Master
-            Sentinel -->|Monitors| Replica1
-            Sentinel -->|Monitors| Replica2
-            Sentinel -->|Triggers| Failover[Failover Process]
-        end
-        
-        subgraph Monitoring
-            Metrics -->|Exports| Prometheus[Prometheus]
-            Prometheus -->|Displays| Grafana[Grafana]
-        end
-        
-        subgraph Backup Infrastructure
-            Backup -->|Schedules| BackupJob[Backup Jobs]
-            BackupJob -->|Stores| Storage[S3/PVC Storage]
-        end
-    end
-
-    style Kubernetes Cluster fill:#f5f5f5,stroke:#333,stroke-width:2px
-    style Operator Components fill:#ffebee,stroke:#c62828,stroke-width:2px
-    style Redis Cluster fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style Sentinel Layer fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    style Monitoring fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style Backup Infrastructure fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
 ```
 
 ## 📊 Monitoring
