@@ -1,63 +1,89 @@
+# postgres-operator/deploy/operator.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres-operator
+  labels:
+    app.kubernetes.io/name: postgres-operator
+    app.kubernetes.io/version: "0.1.0"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-operator
+      app.kubernetes.io/name: postgres-operator
   template:
     metadata:
       labels:
-        app: postgres-operator
+        app.kubernetes.io/name: postgres-operator
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
     spec:
       serviceAccountName: postgres-operator
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 2000
       containers:
-        - name: operator
-          image: postgres-operator:latest
-          env:
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+      - name: operator
+        image: postgres-operator:latest
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsUser: 1000
+          runAsGroup: 2000
+        ports:
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: OPERATOR_LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
 ---
+# Service for metrics endpoint
 apiVersion: v1
-kind: ServiceAccount
+kind: Service
 metadata:
-  name: postgres-operator
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: postgres-operator
-rules:
-  - apiGroups: ["postgres.operator.io"]
-    resources: ["postgresclusters"]
-    verbs: ["*"]
-  - apiGroups: ["apps"]
-    resources: ["statefulsets"]
-    verbs: ["*"]
-  - apiGroups: [""]
-    resources: ["pods", "services", "endpoints", "configmaps"]
-    verbs: ["*"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: postgres-operator
-subjects:
-  - kind: ServiceAccount
-    name: postgres-operator
-    namespace: default
-roleRef:
-  kind: ClusterRole
-  name: postgres-operator
-  apiGroup: rbac.authorization.k8s.io
+  name: postgres-operator-metrics
+  labels:
+    app.kubernetes.io/name: postgres-operator
+    app.kubernetes.io/version: "0.1.0"
+spec:
+  selector:
+    app.kubernetes.io/name: postgres-operator
+  ports:
+  - name: metrics
+    port: 8080
+    targetPort: metrics
+  type: ClusterIP

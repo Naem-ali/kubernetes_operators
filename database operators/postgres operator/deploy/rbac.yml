@@ -1,0 +1,65 @@
+# postgres-operator/deploy/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres-operator
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: postgres-operator
+rules:
+# Operator permissions
+- apiGroups: [ "postgres.operator.io" ]
+  resources: [ "postgresclusters" ]
+  verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
+- apiGroups: [ "postgres.operator.io" ]
+  resources: [ "postgresclusters/status" ]
+  verbs: [ "get", "update", "patch" ]
+- apiGroups: [ "postgres.operator.io" ]
+  resources: [ "postgresclusters/finalizers" ]
+  verbs: [ "update" ]
+
+# PostgreSQL cluster management
+- apiGroups: [ "apps" ]
+  resources: [ "statefulsets" ]
+  verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
+
+# Monitoring and scaling
+- apiGroups: [ "" ]
+  resources: [ "pods", "services", "endpoints", "configmaps" ]
+  verbs: [ "get", "list", "watch" ]
+
+# Metrics collection
+- apiGroups: [ "" ]
+  resources: [ "pods/exec" ]
+  verbs: [ "create" ]
+
+# Persistent storage
+- apiGroups: [ "" ]
+  resources: [ "persistentvolumeclaims" ]
+  verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
+
+# Events
+- apiGroups: [ "" ]
+  resources: [ "events" ]
+  verbs: [ "create", "patch" ]
+
+# For Prometheus monitoring
+- apiGroups: [ "monitoring.coreos.com" ]
+  resources: [ "servicemonitors" ]
+  verbs: [ "get", "create" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: postgres-operator
+subjects:
+- kind: ServiceAccount
+  name: postgres-operator
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: postgres-operator
+  apiGroup: rbac.authorization.k8s.io

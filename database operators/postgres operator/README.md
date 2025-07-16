@@ -11,9 +11,37 @@
 [![Python](https://img.shields.io/badge/python-v3.9+-blue.svg)](https://www.python.org/)
 [![Kubernetes](https://img.shields.io/badge/kubernetes-%3E%3D%201.19-brightgreen.svg)](https://kubernetes.io/)
 
-## 📋 Project Status
 
-🚧 **Current Status:** Development
+## 🔧 Architecture
+
+```mermaid
+graph TD
+    A[Kubernetes API] -->|Watch Events| B[Operator Controller]
+    B -->|Manage| C[PostgreSQL Clusters]
+    B -->|Collect| D[Metrics]
+    B -->|Auto-scale| E[Resources]
+    C -->|Monitor| F[Health Checks]
+```
+
+# Auto-Scaling PostgreSQL Operator Project Structure
+
+postgres-operator/
+├── deploy/                   # Kubernetes deployment files
+│   ├── crd.yaml              # Custom Resource Definition
+│   ├── operator.yaml         # Operator deployment
+│   └── rbac.yaml             # RBAC permissions
+├── postgresoperator/         # Python package
+│   ├── __init__.py
+│   ├── operator.py           # Main operator logic
+│   ├── metrics.py            # Metrics collection
+│   ├── scaling.py            # Scaling algorithms
+│   └── config.py             # Configuration handling
+├── tests/                    # Unit tests
+│   └── test_operator.py
+├── Dockerfile                # Operator image build
+├── requirements.txt          # Python dependencies
+└── README.md                 # Project documentation
+
 
 ## 🎯 Features
 
@@ -97,17 +125,6 @@ pip install -r requirements.txt
 python -m pytest tests/
 ```
 
-## 🔧 Architecture
-
-```mermaid
-graph TD
-    A[Kubernetes API] -->|Watch Events| B[Operator Controller]
-    B -->|Manage| C[PostgreSQL Clusters]
-    B -->|Collect| D[Metrics]
-    B -->|Auto-scale| E[Resources]
-    C -->|Monitor| F[Health Checks]
-```
-
 ## 🛠️ Implementation Notes
 
 ### Technology Stack
@@ -163,10 +180,6 @@ The operator implements intelligent scaling based on multiple factors:
    - Create custom dashboards
    - Implement log aggregation
 
-
-## 📜 License
-
-Apache License 2.0
 
 ## 📞 Support
 
