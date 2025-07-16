@@ -45,7 +45,7 @@ postgres-operator/
 ├── Dockerfile                  # Container image definition
 ├── requirements.txt           # Python dependencies
 └── README.md                  # Documentation
-```              # Project documentation
+```             
 
 
 ## 🎯 Features
