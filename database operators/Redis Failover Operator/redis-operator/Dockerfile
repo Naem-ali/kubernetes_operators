@@ -1,10 +1,19 @@
+# Build stage
+FROM python:3.9-slim as builder
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --user -r requirements.txt
+
+# Final stage
 FROM python:3.9-slim
 
 WORKDIR /app
+COPY --from=builder /root/.local /root/.local
+COPY redisoperator/ ./redisoperator/
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PATH=/root/.local/bin:$PATH
+ENV PYTHONPATH=/app
 
-COPY . .
-
+USER 1001
 CMD ["kopf", "run", "--standalone", "redisoperator/operator.py"]

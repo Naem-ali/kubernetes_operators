@@ -1,0 +1,58 @@
+# redis-operator/deploy/rbac.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: redis-operator
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: redis-operator
+rules:
+# Operator permissions
+- apiGroups: [ "redis.operator.io" ]
+  resources: [ "redisfailovers" ]
+  verbs: [ "get", "list", "watch", "create", "update", "patch", "delete" ]
+- apiGroups: [ "redis.operator.io" ]
+  resources: [ "redisfailovers/status" ]
+  verbs: [ "get", "update", "patch" ]
+- apiGroups: [ "redis.operator.io" ]
+  resources: [ "redisfailovers/finalizers" ]
+  verbs: [ "update" ]
+
+# Redis cluster management permissions
+- apiGroups: [ "apps" ]
+  resources: [ "statefulsets", "deployments" ]
+  verbs: [ "*" ]
+- apiGroups: [ "" ]
+  resources: [ "pods", "services", "endpoints", "persistentvolumeclaims", "configmaps", "secrets" ]
+  verbs: [ "*" ]
+
+# Backup permissions
+- apiGroups: [ "batch" ]
+  resources: [ "cronjobs", "jobs" ]
+  verbs: [ "*" ]
+
+# Monitoring permissions
+- apiGroups: [ "monitoring.coreos.com" ]
+  resources: [ "servicemonitors", "podmonitors" ]
+  verbs: [ "get", "create" ]
+
+# Events permissions
+- apiGroups: [ "" ]
+  resources: [ "events" ]
+  verbs: [ "create", "patch" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: redis-operator
+subjects:
+- kind: ServiceAccount
+  name: redis-operator
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: redis-operator
+  apiGroup: rbac.authorization.k8s.io

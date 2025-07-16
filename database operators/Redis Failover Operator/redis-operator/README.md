@@ -12,6 +12,53 @@
 [![Kubernetes](https://img.shields.io/badge/kubernetes-%3E%3D%201.19-brightgreen.svg)](https://kubernetes.io/)
 [![Redis](https://img.shields.io/badge/redis-6.2+-red.svg)](https://redis.io/)
 
+
+# Redis Failover Operator Project Structure
+
+```
+redis-operator/
+├── deploy/                   # Kubernetes deployment files
+│   ├── crd.yaml             # Custom Resource Definition
+│   ├── operator.yaml        # Operator deployment
+│   └── rbac.yaml            # RBAC permissions
+├── redisoperator/           # Python package
+│   ├── __init__.py         
+│   ├── operator.py          # Main operator logic
+│   ├── failover.py         # Failover management
+│   ├── backup.py           # Backup operations
+│   ├── config.py           # Configuration handling
+│   └── sentinel.py         # Sentinel integration
+├── tests/                   # Unit tests
+│   ├── test_failover.py
+│   └── test_backup.py
+├── Dockerfile              # Operator image build
+├── requirements.txt        # Python dependencies
+└── README.md              # Project documentation
+```
+
+## Component Descriptions
+
+### Core Components
+- `operator.py`: Main controller logic for Redis cluster management
+- `failover.py`: Handles automatic failover using Redis Sentinel
+- `backup.py`: Manages backup and restore operations
+- `config.py`: Configuration management and validation
+- `sentinel.py`: Redis Sentinel integration and monitoring
+
+### Deployment Files
+- `crd.yaml`: Defines RedisCluster custom resource
+- `operator.yaml`: Operator deployment configuration
+- `rbac.yaml`: Required RBAC permissions for operator
+
+### Testing
+- `test_failover.py`: Unit tests for failover logic
+- `test_backup.py`: Unit tests for backup operations
+
+### Build & Dependencies
+- `Dockerfile`: Multi-stage build for operator image
+- `requirements.txt`: Python package dependencies
+
+
 ## 🎯 Features
 
 - ⚡ **High Availability**
