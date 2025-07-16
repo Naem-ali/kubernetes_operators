@@ -23,24 +23,29 @@ graph TD
     C -->|Monitor| F[Health Checks]
 ```
 
-# Auto-Scaling PostgreSQL Operator Project Structure
+## 📁 Project Structure
 
+```
 postgres-operator/
-├── deploy/                   # Kubernetes deployment files
-│   ├── crd.yaml              # Custom Resource Definition
-│   ├── operator.yaml         # Operator deployment
-│   └── rbac.yaml             # RBAC permissions
-├── postgresoperator/         # Python package
+├── deploy/                      # Deployment configurations
+│   ├── crd.yaml                 # Custom Resource Definition
+│   ├── operator.yaml            # Operator deployment
+│   └── rbac.yaml               # RBAC permissions
+│
+├── postgresoperator/           # Core operator package
 │   ├── __init__.py
-│   ├── operator.py           # Main operator logic
-│   ├── metrics.py            # Metrics collection
-│   ├── scaling.py            # Scaling algorithms
-│   └── config.py             # Configuration handling
-├── tests/                    # Unit tests
-│   └── test_operator.py
-├── Dockerfile                # Operator image build
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project documentation
+│   ├── operator.py             # Main controller logic
+│   ├── metrics.py              # Metrics collection
+│   ├── scaling.py              # Auto-scaling algorithms
+│   └── config.py              # Configuration handling
+│
+├── tests/                      # Test suite
+│   └── test_operator.py       # Operator unit tests
+│
+├── Dockerfile                  # Container image definition
+├── requirements.txt           # Python dependencies
+└── README.md                  # Documentation
+```              # Project documentation
 
 
 ## 🎯 Features
