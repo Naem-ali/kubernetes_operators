@@ -14,9 +14,22 @@
 ## 🎯 Supported Databases
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/postgres/postgres/master/doc/src/sgml/logos/postgresql-logo.png" width="100">
-  <img src="https://raw.githubusercontent.com/mysql/mysql-server/8.0/router/src/http/static/icons/mysql.svg" width="100">
-  <img src="https://raw.githubusercontent.com/mongodb/mongo/master/docs/leaf.svg" width="100">
+  <table>
+    <tr align="center">
+      <td width="200">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/postgresql-11-1175122.png" width="100" alt="PostgreSQL">
+        <br>PostgreSQL
+      </td>
+      <td width="200">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/mysql-3521596-2945040.png" width="100" alt="MySQL">
+        <br>MySQL
+      </td>
+      <td width="200">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/mongodb-5-1175140.png" width="100" alt="MongoDB">
+        <br>MongoDB
+      </td>
+    </tr>
+  </table>
 </div>
 
 ## 🌟 Features
@@ -100,11 +113,6 @@ spec:
     copies: 5
 ```
 
-## 📊 Monitoring Dashboard
-
-<div align="center">
-  <img src="https://grafana.com/api/dashboards/12345/images/8765" width="600" alt="Backup Dashboard">
-</div>
 
 ## 🔧 Troubleshooting
 
@@ -131,11 +139,7 @@ make test
 
 Because "untested backup" is like "undefined behavior" - scary and unpredictable!
 
-## 💭 Dad Jokes Corner
-
-> Why did the database admin leave his wife?
-> 
-> He had too many commitment issues and couldn't guarantee atomicity! 
+## 💭 Jokes Corner
 
 > What's a DBA's favorite band?
 >
