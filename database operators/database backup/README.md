@@ -1,7 +1,7 @@
 # 💾 Database Backup/Restore Operator
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kubernetes/community/master/icons/svg/resources/unlisted/backup.svg" width="150">
+  <img src="https://cdn.iconscout.com/icon/premium/png-256-thumb/database-backup-1891610-1597614.png" width="150" alt="Database Backup">
   <br>
   <strong>Because losing data is scarier than Monday mornings!</strong>
   <br><br>
