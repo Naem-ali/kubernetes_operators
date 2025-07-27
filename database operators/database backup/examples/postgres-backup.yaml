@@ -1,0 +1,17 @@
+apiVersion: dbops.example.com/v1alpha1
+kind: DatabaseBackup
+metadata:
+  name: postgres-production-backup
+spec:
+  databaseType: postgresql
+  schedule: "0 2 * * *"  # Daily at 2AM
+  retention: 30          # Days
+  storage:
+    s3:
+      bucket: "db-backups"
+      endpoint: "s3.amazonaws.com"
+      credentialsSecret: "s3-credentials"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "200m"

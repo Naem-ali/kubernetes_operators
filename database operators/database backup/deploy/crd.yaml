@@ -1,0 +1,47 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: databasebackups.dbops.example.com
+spec:
+  group: dbops.example.com
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              databaseType:
+                type: string
+                enum: [ postgresql, mysql, mongodb ]
+              schedule:
+                type: string
+              retention:
+                type: integer
+              storage:
+                type: object
+                properties:
+                  s3:
+                    type: object
+                    properties:
+                      bucket: { type: string }
+                      endpoint: { type: string }
+                      credentialsSecret: { type: string }
+              resources:
+                type: object
+                properties:
+                  requests:
+                    type: object
+                    properties:
+                      cpu: { type: string }
+                      memory: { type: string }
+  scope: Namespaced
+  names:
+    plural: databasebackups
+    singular: databasebackup
+    kind: DatabaseBackup
+    shortNames: [ "dbbackup" ]

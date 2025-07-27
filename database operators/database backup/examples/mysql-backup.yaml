@@ -1,0 +1,13 @@
+apiVersion: dbops.example.com/v1alpha1
+kind: DatabaseBackup
+metadata:
+  name: mysql-production-backup
+spec:
+  databaseType: mysql
+  schedule: "0 3 * * *"
+  retention: 14
+  storage:
+    s3:
+      bucket: "db-backups"
+      endpoint: "minio.example.com:9000"
+      credentialsSecret: "minio-credentials"

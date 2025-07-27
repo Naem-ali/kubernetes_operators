@@ -1,0 +1,17 @@
+# Project Structure
+db-backup-operator/
+├── deploy/
+│   ├── crd.yaml             # Custom Resource Definition
+│   ├── operator.yaml        # Operator deployment
+│   └── rbac.yaml            # RBAC permissions
+├── pkg/
+│   ├── controllers/         # Backup logic
+│   ├── apis/                # API definitions
+│   └── utils/               # Helper functions
+├── examples/
+│   ├── postgres-backup.yaml # Example CRs
+│   └── mysql-backup.yaml
+├── config/
+│   └── manager/             # Kustomize configs
+├── Dockerfile
+└── Makefile

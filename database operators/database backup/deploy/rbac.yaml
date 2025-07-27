@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: db-backup-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: db-backup-operator
+rules:
+- apiGroups: [ "dbops.example.com" ]
+  resources: [ "databasebackups" ]
+  verbs: [ "*" ]
+- apiGroups: [ "batch" ]
+  resources: [ "cronjobs" ]
+  verbs: [ "*" ]
+- apiGroups: [ "" ]
+  resources: [ "pods", "secrets" ]
+  verbs: [ "get", "list", "watch" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: db-backup-operator
+subjects:
+- kind: ServiceAccount
+  name: db-backup-operator
+roleRef:
+  kind: Role
+  name: db-backup-operator
+  apiGroup: rbac.authorization.k8s.io
