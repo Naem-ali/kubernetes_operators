@@ -1,10 +1,16 @@
 # 🎯 Kubernetes Operators Collection
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/operator-framework/operator-sdk/master/website/static/img/logo.svg" width="200">
+  <table>
+    <tr align="center">
+      <td width="300">
+        <img src="https://cdn.iconscout.com/icon/free/png-256/kubernetes-3628739-3030165.png" width="150">
+        <br>
+        <strong>Extending Kubernetes with Custom Controllers</strong>
+      </td>
+    </tr>
+  </table>
   <br>
-  <strong>Extending Kubernetes with Custom Controllers</strong>
-  <br><br>
 
   [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io)
   [![Operators](https://img.shields.io/badge/Operators-4_Types-00ADD8?style=for-the-badge&logo=opera&logoColor=white)](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/)
