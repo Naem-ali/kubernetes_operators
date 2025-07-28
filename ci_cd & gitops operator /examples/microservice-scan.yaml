@@ -1,0 +1,21 @@
+apiVersion: gitops.example.com/v1alpha1
+kind: GitRepoScan
+metadata:
+  name: microservice-scan
+  namespace: gitops-system
+spec:
+  repoUrl: https://github.com/org/microservices.git
+  targetRevision: main
+  scanInterval: 10m
+  pathMappings:
+    - sourcePath: "/services/order-service/overlays/production"
+      destinationCluster: "in-cluster"
+      destinationNamespace: "order-service"
+    - sourcePath: "/services/payment-service/base"
+      destinationCluster: "staging-cluster"
+      destinationNamespace: "payment-service"
+  autoCreateNamespaces: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

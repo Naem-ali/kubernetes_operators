@@ -108,10 +108,6 @@ graph TD
     C -->|Monitor| F[Health Checks]
 ```
 
-## 📜 License
-
-Apache License 2.0
-
 ## 📞 Support
 
 - 📧 [Email Support](mailto:naeem.ali@devopshound.com)

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitops-operator
+  namespace: gitops-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gitops-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gitops-operator
+    spec:
+      serviceAccountName: gitops-operator
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: operator
+        image: gitops-operator:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ARGOCD_NAMESPACE
+          value: "argocd"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

@@ -1,0 +1,81 @@
+# charts/gitops-operator/values.yaml
+
+# Operator Configuration
+operator:
+  image:
+    repository: ghcr.io/yourorg/gitops-operator
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  logLevel: info
+
+# RBAC Configuration
+rbac:
+  create: true
+  pspEnabled: false
+  rules:
+    - apiGroups: ["gitops.example.com"]
+      resources: ["gitreposcans"]
+      verbs: ["*"]
+    - apiGroups: ["argoproj.io"]
+      resources: ["applications"]
+      verbs: ["*"]
+    - apiGroups: [""]
+      resources: ["namespaces", "secrets"]
+      verbs: ["*"]
+
+# Service Account Configuration
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountToken: true
+
+# ArgoCD Integration
+argocd:
+  enabled: true
+  namespace: argocd
+  server: "" # Only set if using external ArgoCD
+
+# Default GitRepoScan Configurations
+defaultScans:
+  enabled: false
+  configurations: []
+
+# Monitoring Configuration
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+
+# Resource Limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Pod Security Context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 2000
+
+# Container Security Context
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Network Policy
+networkPolicy:
+  enabled: false
+  ingress: []
+  egress: []

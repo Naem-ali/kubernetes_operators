@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+  labels:
+    app.kubernetes.io/name: gitops-operator
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/component: controller
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gitops-operator
+      app.kubernetes.io/instance: controller-manager
+      app.kubernetes.io/component: controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gitops-operator
+        app.kubernetes.io/instance: controller-manager
+        app.kubernetes.io/component: controller
+    spec:
+      serviceAccountName: controller-manager
+      containers:
+      - command:
+        - /manager
+        args:
+        - --leader-elect
+        - --enable-leader-election
+        image: controller:latest
+        name: manager
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ARGOCD_SERVER
+          value: "argocd-server.argocd.svc.cluster.local:443"
+        ports:
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+      terminationGracePeriodSeconds: 10

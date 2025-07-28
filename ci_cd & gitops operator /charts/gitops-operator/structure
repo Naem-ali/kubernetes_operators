@@ -1,0 +1,10 @@
+charts/gitops-operator/
+├── Chart.yaml          # Chart metadata
+├── values.yaml         # Default configuration
+├── templates/          # Kubernetes manifests
+│   ├── deployment.yaml
+│   ├── rbac.yaml
+│   ├── crd.yaml
+│   ├── service.yaml
+│   └── _helpers.tpl
+└── README.md           # Chart documentation

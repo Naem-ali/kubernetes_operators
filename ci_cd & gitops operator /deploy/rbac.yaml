@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitops-operator
+  namespace: gitops-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gitops-operator
+rules:
+- apiGroups: ["gitops.example.com"]
+  resources: ["gitreposcans"]
+  verbs: ["*"]
+- apiGroups: ["argoproj.io"]
+  resources: ["applications"]
+  verbs: ["*"]
+- apiGroups: [""]
+  resources: ["secrets", "namespaces"]
+  verbs: ["*"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gitops-operator
+subjects:
+- kind: ServiceAccount
+  name: gitops-operator
+  namespace: gitops-system
+roleRef:
+  kind: ClusterRole
+  name: gitops-operator
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,15 @@
+apiVersion: gitops.example.com/v1alpha1
+kind: GitRepoScan
+metadata:
+  name: monorepo-scan
+spec:
+  repoUrl: https://github.com/org/monorepo.git
+  targetRevision: main
+  scanInterval: 5m
+  pathMappings:
+    - sourcePath: "/apps/frontend/overlays/prod"
+      destinationCluster: "prod-cluster"
+      destinationNamespace: "frontend-prod"
+    - sourcePath: "/apps/backend/base"
+      destinationCluster: "dev-cluster"
+      destinationNamespace: "backend-dev"

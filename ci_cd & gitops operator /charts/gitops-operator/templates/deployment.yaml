@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gitops-operator.fullname" . }}
+  labels:
+    {{- include "gitops-operator.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "gitops-operator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gitops-operator.selectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "{{ .Values.metrics.enabled }}"
+        prometheus.io/port: "8080"
+    spec:
+      serviceAccountName: {{ include "gitops-operator.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.operator.securityContext | nindent 8 }}
+      containers:
+      - name: operator
+        image: "{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"
+        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: ARGOCD_SERVER
+          value: "{{ include "argocd.server" . }}"
+        ports:
+        - name: metrics
+          containerPort: 8080
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.operator.resources | nindent 10 }}

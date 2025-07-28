@@ -1,0 +1,15 @@
+gitops-operator/
+├── deploy/
+│   ├── crd.yaml             # GitRepoScan CRD
+│   ├── operator.yaml        # Operator deployment
+│   └── rbac.yaml            # RBAC permissions
+├── pkg/
+│   ├── controllers/         # Reconciliation logic
+│   ├── scanners/            # Repository scanners
+│   └── generators/          # ArgoCD App generators
+├── examples/
+│   ├── monorepo-scan.yaml   # Example CRs
+│   └── microservice-scan.yaml
+├── config/
+│   └── manager/             # Kustomize configs
+└── charts/                  # Helm charts

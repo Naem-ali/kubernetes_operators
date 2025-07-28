@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gitops-operator.fullname" . }}-metrics
+  labels:
+    {{- include "gitops-operator.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: metrics
+    port: 8080
+    targetPort: metrics
+    protocol: TCP
+  selector:
+    {{- include "gitops-operator.selectorLabels" . | nindent 4 }}

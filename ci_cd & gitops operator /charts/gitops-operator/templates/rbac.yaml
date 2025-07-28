@@ -1,0 +1,64 @@
+{{- if .Values.rbac.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "gitops-operator.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gitops-operator.labels" . | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "gitops-operator.fullname" . }}
+  labels:
+    {{- include "gitops-operator.labels" . | nindent 4 }}
+rules:
+  # Operator permissions
+  - apiGroups: ["gitops.example.com"]
+    resources: ["gitreposcans"]
+    verbs: ["*"]
+  - apiGroups: ["gitops.example.com"]
+    resources: ["gitreposcans/status"]
+    verbs: ["get", "update", "patch"]
+  
+  # ArgoCD permissions
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["*"]
+  
+  # Cluster management
+  - apiGroups: [""]
+    resources: ["namespaces", "secrets"]
+    verbs: ["*"]
+  
+  # Git repository access
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+  
+  # Monitoring
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors"]
+    verbs: ["get", "create"]
+  
+  # Events
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "gitops-operator.fullname" . }}
+  labels:
+    {{- include "gitops-operator.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "gitops-operator.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "gitops-operator.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
