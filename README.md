@@ -124,15 +124,10 @@ spec:
    # Follow operator-specific instructions
    ```
 
-## 💡 Contributing
-
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## 📞 Support
 
 - 📧 [Email Support](mailto:naeem.ali@devopshound.com)
-- 💬 [Community Chat](https://slack.example.com)
-- 📝 [Issue Tracker](https://github.com/example/operators/issues)
 
 ---
 <div align="center">
