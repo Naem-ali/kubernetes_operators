@@ -1,7 +1,7 @@
 # 🎯 Kubernetes Operators Collection
 
 <div align="center">
-  <img src="https://cdn.iconscout.com/icon/free/png-256/kubernetes-3628739-3030165.png" width="150">
+  <img src="https://raw.githubusercontent.com/operator-framework/operator-sdk/master/website/static/img/logo.svg" width="200">
   <br>
   <strong>Extending Kubernetes with Custom Controllers</strong>
   <br><br>
