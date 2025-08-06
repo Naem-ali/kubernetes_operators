@@ -130,11 +130,6 @@ spec:
    # Follow operator-specific instructions
    ```
 
-
-## 📞 Support
-
-- 📧 [Email Support](mailto:naeem.ali@devopshound.com)
-
 ---
 <div align="center">
   <sub>Built with ❤️ by the Kubernetes Community</sub>
